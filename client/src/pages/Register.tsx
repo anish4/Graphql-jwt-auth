@@ -16,7 +16,6 @@ export const Register: React.FC<RouteComponentProps> = ({ history }) => {
 						password,
 					},
 				});
-				console.log(response);
 				history.push('/');
 			}}
 		>

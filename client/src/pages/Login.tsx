@@ -17,7 +17,6 @@ export const Login: React.FC<RouteComponentProps> = ({ history }) => {
 						password,
 					},
 				});
-				console.log(response);
 				if (response && response.data) {
 					setAccessToken(response.data.login.accessToken);
 				}
