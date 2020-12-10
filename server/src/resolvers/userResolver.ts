@@ -16,7 +16,7 @@ import { Length, IsEmail } from 'class-validator';
 import { hash, compare } from 'bcryptjs';
 
 import { User } from '../entity/User';
-import { ContextType } from 'types/ContextType';
+import { ContextType } from '../types/context';
 import { createAccessToken, createRefreshToken } from '../utils/token';
 import { isAuth } from '../middlewares/isAuth';
 import { getConnection } from 'typeorm';

@@ -5,6 +5,7 @@ import express from 'express';
 import { createConnection } from 'typeorm';
 import { buildSchema } from 'type-graphql';
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
 
 import { userResolver } from './resolvers/userResolver';
 import { verify } from 'jsonwebtoken';
@@ -14,6 +15,12 @@ import { sendRefeshToken } from './utils/sendRefreshToken';
 
 (async () => {
 	const app = express();
+	app.use(
+		cors({
+			origin: 'http://localhost:3000',
+			credentials: true,
+		})
+	);
 	app.use(cookieParser());
 	app.post('/refresh_token', async (req, res) => {
 		const token = req.cookies.uid;
@@ -52,7 +59,7 @@ import { sendRefeshToken } from './utils/sendRefreshToken';
 		schema,
 		context: ({ req, res }) => ({ req, res }),
 	});
-	apolloServer.applyMiddleware({ app });
+	apolloServer.applyMiddleware({ app, cors: false });
 
 	app.listen(5000, () => {
 		console.log('server started in port 50000');
