@@ -8,7 +8,7 @@ import {
 } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 
-import App from './App';
+import { App } from './App';
 import reportWebVitals from './reportWebVitals';
 import { getAccessToken } from './accessToken';
 
