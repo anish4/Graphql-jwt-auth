@@ -21,7 +21,7 @@ import { sendRefeshToken } from './utils/sendRefreshToken';
 			credentials: true,
 		})
 	);
-	app.use(cookieParser());
+	app.use('/refresh_token', cookieParser());
 	app.post('/refresh_token', async (req, res) => {
 		const token = req.cookies.uid;
 		if (!token) {
@@ -62,6 +62,6 @@ import { sendRefeshToken } from './utils/sendRefreshToken';
 	apolloServer.applyMiddleware({ app, cors: false });
 
 	app.listen(5000, () => {
-		console.log('server started in port 50000');
+		console.log('server started in port 5000');
 	});
 })();

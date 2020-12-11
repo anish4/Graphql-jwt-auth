@@ -4,7 +4,9 @@ import { useHelloQuery } from '../generated/graphql';
 interface HelloProps {}
 
 export const Hello: React.FC<HelloProps> = () => {
-	const { data, loading, error } = useHelloQuery();
+	const { data, loading, error } = useHelloQuery({
+		fetchPolicy: 'network-only',
+	});
 	if (loading) {
 		return <h1>loading</h1>;
 	}
