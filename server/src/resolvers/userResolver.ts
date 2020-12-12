@@ -21,6 +21,7 @@ import { createAccessToken, createRefreshToken } from '../utils/token';
 import { isAuth } from '../middlewares/isAuth';
 import { getConnection } from 'typeorm';
 import { sendRefeshToken } from '../utils/sendRefreshToken';
+import { verify } from 'jsonwebtoken';
 
 @ArgsType()
 class RegisterArgs {
@@ -37,6 +38,9 @@ class RegisterArgs {
 class TokenResponse {
 	@Field()
 	accessToken: string;
+
+	@Field(() => User)
+	user: User;
 }
 
 @Resolver()
@@ -44,6 +48,23 @@ export class userResolver {
 	@Query(() => [User])
 	async users(): Promise<User[]> {
 		return await User.find();
+	}
+
+	@Query(() => User, { nullable: true })
+	async me(@Ctx() { req }: ContextType): Promise<User | null | undefined> {
+		const auth = req.headers['authorization'];
+		if (!auth) {
+			return null;
+		}
+
+		try {
+			const token = auth.split(' ')[1];
+			const payload = verify(token, process.env.ACCESS_TOEKN_SECRET!) as any;
+			return User.findOne({ id: payload.id });
+		} catch (e) {
+			console.log(e);
+			return null;
+		}
 	}
 
 	@Query(() => String)
@@ -82,6 +103,7 @@ export class userResolver {
 
 		return {
 			accessToken: createAccessToken(user),
+			user,
 		};
 	}
 	//don't expose to users
