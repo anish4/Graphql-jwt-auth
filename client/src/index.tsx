@@ -7,7 +7,6 @@ import {
 	InMemoryCache,
 	ApolloLink,
 	from,
-	Observable,
 } from '@apollo/client';
 import { onError } from '@apollo/client/link/error';
 
@@ -23,49 +22,49 @@ const httpLink = createHttpLink({
 	credentials: 'include',
 });
 
-// const authMiddleware = new ApolloLink((operation, forward) => {
-// 	// add the authorization to the headers
-// 	operation.setContext(({ headers = {} }) => {
-// 		const token = getAccessToken();
-// 		return {
-// 			headers: {
-// 				...headers,
-// 				authorization: token ? `Bearer ${token}` : '',
-// 			},
-// 		};
-// 	});
+const authMiddleware = new ApolloLink((operation, forward) => {
+	// add the authorization to the headers
+	operation.setContext(({ headers = {} }) => {
+		const token = getAccessToken();
+		return {
+			headers: {
+				...headers,
+				authorization: token ? `Bearer ${token}` : '',
+			},
+		};
+	});
 
-// 	return forward(operation);
-// });
-const authMiddleware = new ApolloLink(
-	(operation, forward) =>
-		new Observable((observer) => {
-			let handle: any;
-			Promise.resolve(operation)
-				.then((operation) => {
-					const accessToken = getAccessToken();
-					if (accessToken) {
-						operation.setContext({
-							headers: {
-								authorization: `bearer ${accessToken}`,
-							},
-						});
-					}
-				})
-				.then(() => {
-					handle = forward(operation).subscribe({
-						next: observer.next.bind(observer),
-						error: observer.error.bind(observer),
-						complete: observer.complete.bind(observer),
-					});
-				})
-				.catch(observer.error.bind(observer));
+	return forward(operation);
+});
+// const authMiddleware = new ApolloLink(
+// 	(operation, forward) =>
+// 		new Observable((observer) => {
+// 			let handle: any;
+// 			Promise.resolve(operation)
+// 				.then((operation) => {
+// 					const accessToken = getAccessToken();
+// 					if (accessToken) {
+// 						operation.setContext({
+// 							headers: {
+// 								authorization: `bearer ${accessToken}`,
+// 							},
+// 						});
+// 					}
+// 				})
+// 				.then(() => {
+// 					handle = forward(operation).subscribe({
+// 						next: observer.next.bind(observer),
+// 						error: observer.error.bind(observer),
+// 						complete: observer.complete.bind(observer),
+// 					});
+// 				})
+// 				.catch(observer.error.bind(observer));
 
-			return () => {
-				if (handle) handle.unsubscribe();
-			};
-		})
-);
+// 			return () => {
+// 				if (handle) handle.unsubscribe();
+// 			};
+// 		})
+// );
 
 const client = new ApolloClient({
 	link: from([
