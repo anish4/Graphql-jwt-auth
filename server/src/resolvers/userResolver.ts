@@ -106,6 +106,12 @@ export class userResolver {
 			user,
 		};
 	}
+
+	@Mutation(() => Boolean)
+	logout(@Ctx() { res }: ContextType): boolean {
+		sendRefeshToken(res, '');
+		return true;
+	}
 	//don't expose to users
 	@Mutation(() => Boolean)
 	async revokeRefreshToken(
